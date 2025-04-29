@@ -1,65 +1,31 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
-  const container = document.getElementById("productos");
-  const shopifyDomain = "zd5inb-v0.myshopify.com";
-  const token = "aa0a5c82071a815446914c9d76077c8d";
+  const productosContainer = document.getElementById("productos");
+  try {
+    const response = await fetch("https://mb-emprende-backend.onrender.com/productos");
+    const data = await response.json();
+    const productos = data.data.products.edges;
 
-  const response = await fetch(`https://${shopifyDomain}/api/2023-10/graphql.json`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": token,
-    },
-    body: JSON.stringify({
-      query: `
-        {
-          products(first: 10) {
-            edges {
-              node {
-                title
-                description
-                images(first: 1) {
-                  edges {
-                    node {
-                      src
-                    }
-                  }
-                }
-                variants(first: 1) {
-                  edges {
-                    node {
-                      id
-                      price {
-                        amount
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `
-    })
-  });
+    productos.forEach(({ node }) => {
+      const imagen = node.images.edges[0]?.node.url || "";
+      const titulo = node.title;
+      const descripcion = node.description;
+      const precio = node.variants.edges[0]?.node.price.amount || "0.00";
+      const variantId = node.variants.edges[0]?.node.id.split("/").pop();
 
-  const result = await response.json();
-  const productos = result.data.products.edges;
+      const productoHTML = `
+        <div class="producto">
+          <img src="${imagen}" alt="${titulo}">
+          <h3>${titulo}</h3>
+          <p>${descripcion}</p>
+          <p><strong>$${precio}</strong></p>
+          <a class="boton-comprar" href="https://zd5inb-v0.myshopify.com/cart/${variantId}:1" target="_blank">Comprar Ahora</a>
+        </div>
+      `;
 
-  productos.forEach(({ node }) => {
-    const imagen = node.images.edges[0]?.node.src || "";
-    const precio = node.variants.edges[0]?.node.price.amount || "0";
-    const variantId = node.variants.edges[0]?.node.id.split("/").pop();
-
-    const html = `
-      <div class="producto">
-        <img src="${imagen}" alt="${node.title}" width="200" />
-        <h3>${node.title}</h3>
-        <p>${node.description}</p>
-        <p><strong>$${precio}</strong></p>
-        <a href="https://${shopifyDomain}/cart/${variantId}:1" class="boton-comprar" target="_blank">Comprar Ahora</a>
-      </div>
-    `;
-    container.innerHTML += html;
-  });
+      productosContainer.innerHTML += productoHTML;
+    });
+  } catch (error) {
+    productosContainer.innerHTML = "<p>Error al cargar productos.</p>";
+    console.error(error);
+  }
 });
