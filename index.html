@@ -8,20 +8,32 @@
 </head>
 <body>
   <header>MB Emprende</header>
-  <nav class="navbar">
-    <div class="dropdown">
-      <button class="dropbtn">Menú</button>
-      <div class="dropdown-content">
-        <a href="index.html">Inicio</a>
-        <a href="contacto.html">Contacto</a>
-        <a href="gracias.html">Gracias</a>
-        <a href="sobre-nosotros.html">Sobre Nosotros</a>
-      </div>
-    </div>
-  </nav>
   <main>
     <h1>Bienvenido a nuestra tienda</h1>
+    <div id="productos" class="productos"></div>
   </main>
   <footer>© 2025 MB Emprende</footer>
+  <script>
+    async function cargarProductos() {
+      try {
+        const response = await fetch("/productos");
+        const data = await response.json();
+        const productosDiv = document.getElementById("productos");
+        productosDiv.innerHTML = data.data.products.edges.map(edge => `
+          <div class="producto">
+            <h2>${edge.node.title}</h2>
+            <img src="${edge.node.images.edges[0].node.url}" alt="${edge.node.title}" />
+            <p>${edge.node.description}</p>
+            <p>Precio: $${edge.node.variants.edges[0].node.price.amount}</p>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      }
+    }
+
+    cargarProductos();
+  </script>
 </body>
 </html>
+
