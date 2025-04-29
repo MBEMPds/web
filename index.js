@@ -16,7 +16,7 @@ app.get("/productos", async (req, res) => {
     const response = await fetch("https://zd5inb-v0.myshopify.com/api/2023-10/graphql.json", {
       method: "POST",
       headers: {
-        "X-Shopify-Storefront-Access-Token": process.env.SHOPIFY_TOKEN,
+        "X-Shopify-Storefront-Access-Token": "aa0a5c82071a815446914c9d76077c8d", // Token de acceso
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -50,11 +50,16 @@ app.get("/productos", async (req, res) => {
         }`
       }),
     });
+
+    if (!response.ok) {
+      throw new Error("Error en la respuesta de Shopify");
+    }
+
     const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al cargar productos desde Shopify" });
+    res.status(500).json({ error: "Error al cargar productos desde Shopify: " + error.message });
   }
 });
 
