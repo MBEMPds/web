@@ -17,18 +17,26 @@
     async function cargarProductos() {
       try {
         const response = await fetch("/productos");
+        if (!response.ok) {
+          throw new Error("Error al cargar productos");
+        }
         const data = await response.json();
         const productosDiv = document.getElementById("productos");
-        productosDiv.innerHTML = data.data.products.edges.map(edge => `
-          <div class="producto">
-            <h2>${edge.node.title}</h2>
-            <img src="${edge.node.images.edges[0].node.url}" alt="${edge.node.title}" />
-            <p>${edge.node.description}</p>
-            <p>Precio: $${edge.node.variants.edges[0].node.price.amount}</p>
-          </div>
-        `).join('');
+        if (data.data && data.data.products && data.data.products.edges.length > 0) {
+          productosDiv.innerHTML = data.data.products.edges.map(edge => `
+            <div class="producto">
+              <h2>${edge.node.title}</h2>
+              <img src="${edge.node.images.edges[0].node.url}" alt="${edge.node.title}" />
+              <p>${edge.node.description}</p>
+              <p>Precio: $${edge.node.variants.edges[0].node.price.amount}</p>
+            </div>
+          `).join('');
+        } else {
+          productosDiv.innerHTML = "<p>No se encontraron productos.</p>";
+        }
       } catch (error) {
         console.error("Error al cargar productos:", error);
+        document.getElementById("productos").innerHTML = "<p>Error al cargar productos. Intenta de nuevo más tarde.</p>";
       }
     }
 
@@ -36,4 +44,3 @@
   </script>
 </body>
 </html>
-
