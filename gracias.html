@@ -1,19 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gracias por tu compra - MB Emprende</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gracias por tu compra</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<header>¡Gracias por tu compra!</header>
-<main style="text-align: center; padding: 50px;">
-  <h2>Tu pedido está siendo procesado.</h2>
-  <p>Te enviaremos una confirmación a tu correo.</p>
-  <a href="index.html" class="boton-comprar">Volver a la tienda</a>
-</main>
-<footer>© 2025 MB Emprende</footer>
+  <header>MB Emprende</header>
+  <main>
+    <h1>¡Gracias por tu compra!</h1>
+    <div id="respuesta-ia" class="mensaje-ia">Generando un mensaje personalizado para ti...</div>
+  </main>
+  <footer>© 2025 MB Emprende</footer>
+  <script src="app.js"></script>
+  <script>
+    obtenerMensajeIA("María", "un collar de plata");
+  </script>
 </body>
 </html>
